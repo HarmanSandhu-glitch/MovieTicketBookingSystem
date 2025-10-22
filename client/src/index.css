@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ... (shadcn/ui CSS variables) ... */
+  }
+
+  .dark {
+    /* ... (shadcn/ui dark mode variables) ... */
+  }
+}
+
+@layer base {
+  /* Minimal base styles to avoid missing shadcn custom utilities during build */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: white;
+    color: #0f172a; /* slate-900 */
+  }
+}
