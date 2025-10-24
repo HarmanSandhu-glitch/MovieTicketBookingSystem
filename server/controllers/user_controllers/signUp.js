@@ -1,14 +1,14 @@
 import User from "../../models/user_model.js";
 const signUp = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword } = req.body;
-        if (!name || !email || !password || !confirmPassword) {
+        const { name, email, password, confirm_password } = req.body;
+        if (!name || !email || !password || !confirm_password) {
             return res.status(400).json({
                 success: false,
                 message: 'Name, email, password, and confirm password are required'
             });
         }
-        if (password !== confirmPassword) {
+        if (password !== confirm_password) {
             return res.status(400).json({
                 success: false,
                 message: 'Passwords do not match'
@@ -21,7 +21,7 @@ const signUp = async (req, res) => {
                 message: 'Email is already registered'
             });
         }
-        const newUser = new User({ name, email, password, confirm_password: confirmPassword });
+        const newUser = new User({ name, email, password, confirm_password });
         await newUser.save();
         res.status(201).json({
             success: true,

@@ -1,25 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    /* ... (shadcn/ui CSS variables) ... */
-  }
-
-  .dark {
-    /* ... (shadcn/ui dark mode variables) ... */
-  }
+:root {
+  --color-primary: 59 130 246; /* blue-500 */
+  --color-primary-dark: 37 99 235; /* blue-600 */
+  --color-secondary: 99 102 241; /* indigo-500 */
+  --color-accent: 168 85 247; /* purple-500 */
+  --color-success: 34 197 94; /* green-500 */
+  --color-warning: 251 191 36; /* amber-400 */
+  --color-danger: 239 68 68; /* red-500 */
+  --color-dark: 17 24 39; /* gray-900 */
+  --color-light: 249 250 251; /* gray-50 */
 }
 
-@layer base {
-  /* Minimal base styles to avoid missing shadcn custom utilities during build */
-  *, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background-color: rgb(249 250 251);
+  color: rgb(17 24 39);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  body {
-    margin: 0;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: white;
-    color: #0f172a; /* slate-900 */
-  }
+* {
+  box-sizing: border-box;
+}
+
+.bg-primary {
+  background-color: rgb(var(--color-primary));
+}
+
+.bg-primary-dark {
+  background-color: rgb(var(--color-primary-dark));
+}
+
+.text-primary {
+  color: rgb(var(--color-primary));
+}
+
+.border-primary {
+  border-color: rgb(var(--color-primary));
 }
