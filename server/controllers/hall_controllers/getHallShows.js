@@ -1,16 +1,21 @@
 import Show from '../../models/show_model.js';
+import { successResponse, errorResponse } from '../../utils/apiResponse.js';
+import { asyncHandler } from '../../utils/errorHandler.js';
+import { validateObjectId } from '../../utils/validation.js';
 
-const getHallShow = async (req, res) => {
-    try {
-        const hallId = req.params.id;
+const getHallShows = asyncHandler(async (req, res) => {
+  const hallId = req.params.id;
+  
+  // Validate ObjectId
+  if (!validateObjectId(hallId)) {
+    return errorResponse(res, 'Invalid hall ID', 400);
+  }
+  
+  const shows = await Show.find({ hall: hallId }).sort({ timing: 1 });
+  
+  console.log('Fetched shows for hall:', hallId, shows);
+  
+  return successResponse(res, { shows }, 'Shows fetched successfully');
+});
 
-        const shows = await Show.find({ hall: hallId });
-        console.log('Fetched shows for hall:', hallId, shows);
-        res.status(200).json(shows);
-    } catch (error) {
-        console.error('Error fetching shows for hall:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-}
-
-export default getHallShow;
+export default getHallShows;

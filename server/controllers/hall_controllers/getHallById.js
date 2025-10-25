@@ -1,23 +1,23 @@
 import Hall from '../../models/hall_model.js';
-const getHallById = (req, res) => {
-    try {
-        const hallId = req.params.id;
+import { successResponse, notFoundResponse, errorResponse } from '../../utils/apiResponse.js';
+import { asyncHandler } from '../../utils/errorHandler.js';
+import { validateObjectId } from '../../utils/validation.js';
 
-        Hall.findById(hallId)
-            .then(hall => {
-                if (!hall) {
-                    return res.status(404).json({ message: 'Hall not found' });
-                }
-                res.status(200).json(hall);
-            })
-            .catch(error => {
-                console.error('Error fetching hall:', error);
-                res.status(500).json({ message: 'Server error', error: error.message });
-            });
-    } catch (error) {
-        console.error('Error fetching hall:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-}
+const getHallById = asyncHandler(async (req, res) => {
+  const hallId = req.params.id;
+  
+  // Validate ObjectId
+  if (!validateObjectId(hallId)) {
+    return errorResponse(res, 'Invalid hall ID', 400);
+  }
+  
+  const hall = await Hall.findById(hallId);
+  
+  if (!hall) {
+    return notFoundResponse(res, 'Hall');
+  }
+  
+  return successResponse(res, hall, 'Hall fetched successfully');
+});
 
 export default getHallById;

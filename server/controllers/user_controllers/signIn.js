@@ -39,11 +39,7 @@ const signIn = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Sign in successful',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            }
+            user
         });
 
     } catch (error) {

@@ -28,7 +28,8 @@ export const getAllHalls = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/all`);
-      return response.data;
+      // Handle new response format with data property
+      return response.data.data || response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch halls'
@@ -43,7 +44,8 @@ export const getHallById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/${id}`);
-      return response.data;
+      // Handle new response format with data property
+      return response.data.data || response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch hall'
@@ -58,7 +60,9 @@ export const getHallShows = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/${id}/shows`);
-      return response.data;
+      // Handle new response format - get shows array from response
+      const data = response.data.data || response.data;
+      return data.shows || data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch hall shows'

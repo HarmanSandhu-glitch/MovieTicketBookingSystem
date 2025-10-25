@@ -1,15 +1,24 @@
-import { createHall, deleteHall, getAllHalls, getHallById, getHallShows, updateHall } from "../controllers/hall_controllers/index.js";
-
 import express from 'express';
 import { isAuth, isAdmin } from "../middlewares/authMiddleware.js";
+import { 
+  createHall, 
+  deleteHall, 
+  getAllHalls, 
+  getHallById, 
+  getHallShows, 
+  updateHall 
+} from "../controllers/hall_controllers/index.js";
+
 const router = express.Router();
 
+// Static routes first (before dynamic :id routes)
 router.post('/create', isAuth, isAdmin, createHall);
 router.get('/all', getAllHalls);
+
+// Dynamic routes after static routes
 router.get('/:id', getHallById);
 router.get('/:id/shows', getHallShows);
 router.put('/:id/update', isAuth, isAdmin, updateHall);
 router.delete('/:id/delete', isAuth, isAdmin, deleteHall);
-
 
 export default router;

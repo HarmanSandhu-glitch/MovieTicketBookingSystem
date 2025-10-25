@@ -1,7 +1,4 @@
 import mongoose from 'mongoose';
-import Show from './show_model.js';
-import Hall from './hall_model.js';
-import Seat from './seat_model.js';
 
 const ticketSchema = new mongoose.Schema({
     owner: {
@@ -24,7 +21,7 @@ const ticketSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['booked', 'cancelled', 'completed'],
+        enum: ['booked', 'confirmed', 'cancelled', 'completed'],
         default: 'booked'
     },
     seats: [{
@@ -38,20 +35,6 @@ const ticketSchema = new mongoose.Schema({
         required: true
     }
 }, { timestamps: true });
-
-ticketSchema.pre('save', async function (next) {
-    if (this.isNew) {
-        const show = await Show.findById(this.show);
-        const hall = await Hall.findById(show.hall);
-        const seats = await Seat.find({ _id: { $in: this.seats } });
-
-        this.totalPrice = seats.reduce((total, seat) => {
-            const seatTypePrice = hall.seatTypes.find(st => st.type === seat.type)?.price || 0;
-            return total + seatTypePrice;
-        }, 0);
-    }
-    next();
-});
 
 const Ticket = mongoose.model('Ticket', ticketSchema);
 

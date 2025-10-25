@@ -50,31 +50,71 @@ const ShowDetails = () => {
         setSeatsLoading(true);
         try {
           const hallId = selectedShow.hall._id || selectedShow.hall;
-          // Fetch all seats for the hall and check booking status for this show
+          
+          // Fetch all seats for the hall
           const response = await axios.get(`http://localhost:5000/api/seats/hall/${hallId}`);
           
-          // For each seat, check if it's booked for this show
-          const seatsWithStatus = await Promise.all(
-            response.data.map(async (seat) => {
-              try {
-                const statusResponse = await axios.get(`http://localhost:5000/api/seats/${seat._id}/${id}`);
-                return {
-                  ...seat,
-                  isBooked: statusResponse.data.isSeatBooked || false
-                };
-              } catch (error) {
-                return {
-                  ...seat,
-                  isBooked: false
-                };
-              }
-            })
-          );
-          
-          setSeats(seatsWithStatus);
+          if (!response.data || response.data.length === 0) {
+            // If no seats exist, try to create them
+            console.log('No seats found, attempting to create seats for hall:', hallId);
+            try {
+              const createResponse = await axios.post(`http://localhost:5000/api/seats/hall/${hallId}/create`);
+              console.log('Seats created:', createResponse.data);
+              
+              // Fetch the newly created seats
+              const newSeatsResponse = await axios.get(`http://localhost:5000/api/seats/hall/${hallId}`);
+              
+              // Check booking status for each seat
+              const seatsWithStatus = await Promise.all(
+                newSeatsResponse.data.map(async (seat) => {
+                  try {
+                    const statusResponse = await axios.get(`http://localhost:5000/api/seats/${seat._id}/${id}`);
+                    return {
+                      ...seat,
+                      isBooked: statusResponse.data.isSeatBooked || false
+                    };
+                  } catch (error) {
+                    console.error('Error checking seat status:', error);
+                    return {
+                      ...seat,
+                      isBooked: false
+                    };
+                  }
+                })
+              );
+              
+              setSeats(seatsWithStatus);
+            } catch (createError) {
+              console.error('Error creating seats:', createError);
+              toast.error('Failed to initialize seats for this hall');
+              setSeats([]);
+            }
+          } else {
+            // Check booking status for each existing seat
+            const seatsWithStatus = await Promise.all(
+              response.data.map(async (seat) => {
+                try {
+                  const statusResponse = await axios.get(`http://localhost:5000/api/seats/${seat._id}/${id}`);
+                  return {
+                    ...seat,
+                    isBooked: statusResponse.data.isSeatBooked || false
+                  };
+                } catch (error) {
+                  console.error('Error checking seat status:', error);
+                  return {
+                    ...seat,
+                    isBooked: false
+                  };
+                }
+              })
+            );
+            
+            setSeats(seatsWithStatus);
+          }
         } catch (error) {
-          toast.error('Failed to fetch seats');
           console.error('Error fetching seats:', error);
+          toast.error('Failed to fetch seats');
+          setSeats([]);
         } finally {
           setSeatsLoading(false);
         }

@@ -1,18 +1,11 @@
 import Hall from '../../models/hall_model.js';
-const getAllHalls = (req, res) => {
-    try {
-        Hall.find()
-            .then(halls => {
-                res.status(200).json(halls);
-            })
-            .catch(error => {
-                console.error('Error fetching halls:', error);
-                res.status(500).json({ message: 'Server error', error: error.message });
-            });
-    } catch (error) {
-        console.error('Error fetching halls:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-}
+import { successResponse } from '../../utils/apiResponse.js';
+import { asyncHandler } from '../../utils/errorHandler.js';
+
+const getAllHalls = asyncHandler(async (req, res) => {
+  const halls = await Hall.find().sort({ createdAt: -1 });
+  
+  return successResponse(res, halls, 'Halls fetched successfully');
+});
 
 export default getAllHalls;
