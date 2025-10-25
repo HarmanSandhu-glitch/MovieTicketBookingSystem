@@ -52,6 +52,22 @@ export const getShowById = createAsyncThunk(
   }
 );
 
+// Get Hall Shows
+export const getHallShows = createAsyncThunk(
+  'shows/getHallShows',
+  async (hallId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/halls/${hallId}/shows`);
+      console.log('Backend response for getHallShows:', response.data);
+      return response.data.shows || response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to fetch hall shows'
+      );
+    }
+  }
+);
+
 // Update Show (Admin only)
 export const updateShow = createAsyncThunk(
   'shows/update',
@@ -87,6 +103,7 @@ const showsSlice = createSlice({
   initialState: {
     shows: [],
     currentShow: null,
+    hallShows: [], // Add hallShows to the shows slice
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -101,6 +118,9 @@ const showsSlice = createSlice({
     },
     clearCurrentShow: (state) => {
       state.currentShow = null;
+    },
+    clearHallShows: (state) => {
+      state.hallShows = [];
     },
   },
   extraReducers: (builder) => {
@@ -130,7 +150,7 @@ const showsSlice = createSlice({
       .addCase(getAllShows.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.shows = action.payload.shows; // Extract the shows array from the response
+        state.shows = action.payload;
       })
       .addCase(getAllShows.rejected, (state, action) => {
         state.isLoading = false;
@@ -149,6 +169,22 @@ const showsSlice = createSlice({
         state.currentShow = action.payload;
       })
       .addCase(getShowById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      // Get Hall Shows
+      .addCase(getHallShows.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.message = '';
+      })
+      .addCase(getHallShows.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.hallShows = action.payload;
+      })
+      .addCase(getHallShows.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -199,5 +235,5 @@ const showsSlice = createSlice({
   },
 });
 
-export const { resetShows, clearCurrentShow } = showsSlice.actions;
+export const { resetShows, clearCurrentShow, clearHallShows } = showsSlice.actions;
 export default showsSlice.reducer;

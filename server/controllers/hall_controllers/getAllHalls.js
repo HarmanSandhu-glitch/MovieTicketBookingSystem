@@ -3,7 +3,7 @@ const getAllHalls = (req, res) => {
     try {
         Hall.find()
             .then(halls => {
-                res.status(200).json({ halls });
+                res.status(200).json(halls);
             })
             .catch(error => {
                 console.error('Error fetching halls:', error);

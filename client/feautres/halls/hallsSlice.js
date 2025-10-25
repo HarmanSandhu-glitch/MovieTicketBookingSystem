@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createSelector } from 'reselect';
 
 const API_URL = 'http://localhost:5000/api/halls';
 
@@ -101,7 +102,7 @@ const hallsSlice = createSlice({
   initialState: {
     halls: [],
     currentHall: null,
-    hallShows: [],
+    hallShows: null, // Ensure hallShows is initialized as null
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -231,5 +232,11 @@ const hallsSlice = createSlice({
   },
 });
 
-export const { resetHalls, clearCurrentHall } = hallsSlice.actions;
+// Memoized selector for hallShows
+export const selectHallShows = createSelector(
+  (state) => state.halls.hallShows || [], // Ensure hallShows is always an array
+  (hallShows) => hallShows // Return the array directly without creating a new reference
+);
+
+export const { resetHalls, clearCurrentHall, } = hallsSlice.actions;
 export default hallsSlice.reducer;

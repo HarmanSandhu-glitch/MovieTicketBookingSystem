@@ -1,25 +1,33 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getHallById } from '../feautres/halls/hallsSlice';
+import { getHallById, clearCurrentHall } from '../feautres/halls/hallsSlice';
 import { toast } from 'react-toastify';
 import HallShows from '../components/shows/HallShows';
 
 const HallDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const hallsState = useSelector((state) => state.halls);
-  
-  const selectedHall = hallsState?.selectedHall || hallsState?.currentHall;
-  const isLoading = hallsState?.isLoading || false;
-  const isError = hallsState?.isError || false;
-  const message = hallsState?.message || '';
+  console.log('[HallDetails] Rendering with id:', id);
+
+  // Use specific selectors to avoid unnecessary re-renders
+  const selectedHall = useSelector((state) => state.halls.currentHall);
+  const isLoading = useSelector((state) => state.halls.isLoading);
+  const isError = useSelector((state) => state.halls.isError);
+  const message = useSelector((state) => state.halls.message);
 
   useEffect(() => {
+    console.log('[HallDetails] Effect running for id:', id);
     if (id) {
       dispatch(getHallById(id));
     }
-  }, [dispatch, id]);
+
+    // Cleanup function - only clear when component truly unmounts or id changes
+    return () => {
+      console.log('[HallDetails] Cleanup running');
+      dispatch(clearCurrentHall());
+    };
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (isError && message) {
@@ -189,7 +197,7 @@ const HallDetails = () => {
         {/* Shows Section */}
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Shows</h2>
-          <HallShows hallId={id} />
+          <HallShows _hallId={id} />
         </div>
       </div>
     </div>

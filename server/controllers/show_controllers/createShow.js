@@ -11,7 +11,7 @@ const createShow = async (req, res) => {
             description,
             hall: hallId
         });
-        res.status(201).json({ message: 'Show created successfully', show: newShow });
+        res.status(201).json(newShow);
     } catch (error) {
         console.error('Error creating show:', error);
         res.status(500).json({ message: 'Server error', error: error.message });

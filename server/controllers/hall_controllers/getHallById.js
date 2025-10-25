@@ -8,7 +8,7 @@ const getHallById = (req, res) => {
                 if (!hall) {
                     return res.status(404).json({ message: 'Hall not found' });
                 }
-                res.status(200).json({ hall });
+                res.status(200).json(hall);
             })
             .catch(error => {
                 console.error('Error fetching hall:', error);

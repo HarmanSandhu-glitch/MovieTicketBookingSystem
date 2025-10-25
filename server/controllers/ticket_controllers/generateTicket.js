@@ -10,7 +10,7 @@ const generateTicket = (req, res) => {
     });
     newTicket.save()
         .then(ticket => {
-            res.status(201).json({ ticket });
+            res.status(201).json(ticket);
         })
         .catch(error => {
             console.error('Error generating ticket:', error);

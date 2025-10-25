@@ -1,29 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getHallShows, resetHalls } from '../../feautres/halls/hallsSlice';
-import { toast } from 'react-toastify';
+import { getHallShows } from '../../feautres/shows/showsSlice';
 import ShowCard from './ShowCard';
 
-const HallShows = ({ hallId }) => {
+function HallShows({ _hallId }) {
   const dispatch = useDispatch();
-  const { hallShows, isLoading, isError, message } = useSelector((state) => state.halls);
+  const { hallShows, isLoading, isError, message } = useSelector((state) => state.shows);
+  const fetchedRef = useRef(false);
+
+  console.log('HallShows rendered with:', hallShows);
 
   useEffect(() => {
-    if (hallId) {
-      dispatch(getHallShows(hallId));
+    console.log('Effect running, fetchedRef.current:', fetchedRef.current);
+
+    // Reset fetchedRef when hallId changes
+    fetchedRef.current = false;
+
+    if (_hallId) {
+      console.log('Dispatching getHallShows for hallId:', _hallId);
+      dispatch(getHallShows(_hallId));
+      fetchedRef.current = true;
     }
-
-    return () => {
-      dispatch(resetHalls());
-    };
-  }, [dispatch, hallId]);
-
-  useEffect(() => {
-    if (isError && message) {
-      toast.error(message);
-    }
-  }, [isError, message]);
-
+  }, [_hallId, dispatch]);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -54,13 +52,12 @@ const HallShows = ({ hallId }) => {
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       <h3 className="text-2xl font-bold text-gray-800">
         Shows ({hallShows.length})
       </h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {hallShows.map((show) => (
           <ShowCard
@@ -75,6 +72,6 @@ const HallShows = ({ hallId }) => {
       </div>
     </div>
   );
-};
+}
 
-export default HallShows; 
+export default HallShows;

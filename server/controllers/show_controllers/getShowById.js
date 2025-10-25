@@ -8,7 +8,7 @@ const getShow = (req, res) => {
                 if (!show) {
                     return res.status(404).json({ message: 'Show not found' });
                 }
-                res.status(200).json({ show });
+                res.status(200).json(show);
             })
             .catch(error => {
                 console.error('Error fetching show:', error);

@@ -21,6 +21,12 @@ const signUp = async (req, res) => {
                 message: 'Email is already registered'
             });
         }
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 6 characters long'
+            });
+        }
         const newUser = new User({ name, email, password, confirm_password });
         await newUser.save();
         res.status(201).json({

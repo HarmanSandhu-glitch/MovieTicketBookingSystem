@@ -16,7 +16,7 @@ const updateShow = (req, res) => {
                 if (!updatedShow) {
                     return res.status(404).json({ message: 'Show not found' });
                 }
-                res.status(200).json({ message: 'Show updated successfully', show: updatedShow });
+                res.status(200).json(updatedShow);
             })
             .catch(error => {
                 console.error('Error updating show:', error);

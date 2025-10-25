@@ -11,7 +11,7 @@ const Navbar = () => {
     const { user } = useSelector((state) => state.auth);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(signOut());
         toast.success('Logged out successfully!');
         navigate('/');
     };

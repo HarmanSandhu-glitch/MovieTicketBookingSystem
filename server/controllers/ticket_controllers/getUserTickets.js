@@ -8,7 +8,7 @@ const getUserTickets = (req, res) => {
             .populate('movieId')
             .populate('showId')
             .then(tickets => {
-                res.status(200).json({ tickets });
+                res.status(200).json(tickets);
             })
             .catch(error => {
                 console.error('Error fetching tickets:', error);
